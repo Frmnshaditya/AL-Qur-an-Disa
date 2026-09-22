@@ -10,6 +10,7 @@ import {
 } from './types.ts';
 import { Sidebar } from './components/Sidebar.tsx';
 import { Header } from './components/Header.tsx';
+import { PublicLandingPage } from './components/PublicLandingPage.tsx';
 import { EventCatalogPublic } from './components/EventCatalogPublic.tsx';
 import { DashboardMitra } from './components/DashboardMitra.tsx';
 import { DashboardSuperadmin } from './components/DashboardSuperadmin.tsx';
@@ -23,6 +24,7 @@ import { DisabilityManagement } from './components/DisabilityManagement.tsx';
 import { ApplicationSettingsDashboard } from './components/ApplicationSettingsDashboard.tsx';
 import { LogsModal } from './components/LogsModal.tsx';
 import { LoginFormModal } from './components/LoginFormModal.tsx';
+import { ChangePasswordModal } from './components/ChangePasswordModal.tsx';
 import { LoginRequiredNotice } from './components/LoginRequiredNotice.tsx';
 import { applyThemeColors } from './utils/themeColors.ts';
 
@@ -45,6 +47,7 @@ export default function App() {
   // Auth state
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
   const [loginRoleHint, setLoginRoleHint] = useState<'mitra' | 'superadmin' | undefined>(undefined);
 
   const [users, setUsers] = useState<User[]>([]);
@@ -148,15 +151,22 @@ export default function App() {
   };
 
   const updateBrowserBranding = (settings: ApplicationSettings) => {
+    if (settings.applicationName) {
+      document.title = settings.applicationName;
+    }
     if (settings.favicon) {
-      let link: HTMLLinkElement | null = document.querySelector("link[rel*='icon']");
-      if (!link) {
-        link = document.createElement('link');
+      const existingIcons = document.querySelectorAll<HTMLLinkElement>("link[rel*='icon']");
+      if (existingIcons.length > 0) {
+        existingIcons.forEach(icon => {
+          icon.href = settings.favicon;
+        });
+      } else {
+        const link = document.createElement('link');
         link.type = 'image/x-icon';
         link.rel = 'shortcut icon';
+        link.href = settings.favicon;
         document.getElementsByTagName('head')[0].appendChild(link);
       }
-      link.href = settings.favicon;
     }
   };
 
@@ -371,11 +381,76 @@ export default function App() {
     handleLogAction('Filter Periode Data', 'system', `Super Admin mengubah filter waktu analitik menjadi: ${period}.`, 'info');
   };
 
+  // Public view matching the user's design image
+  if (activeView === 'events') {
+    return (
+      <div className="w-full min-h-screen bg-white">
+        {/* Subtle Toast Notification */}
+        {toastMessage && (
+          <div className="fixed top-5 right-5 z-50 bg-slate-900 text-white px-4 py-2.5 rounded-xl shadow-lg flex items-center gap-2 text-[13px] font-medium animate-in fade-in">
+            <span className="material-symbols-outlined text-[18px] text-emerald-400 shrink-0">check_circle</span>
+            <span>{toastMessage}</span>
+          </div>
+        )}
+
+        {/* Admin Bar if logged in */}
+        {currentUser && (
+          <div className="sticky top-0 z-50 bg-[#1e293b] text-white px-4 py-2 flex items-center justify-between text-xs border-b border-slate-700 shadow-sm">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+              <span className="font-medium">Pratinjau Publik Portal Pelatihan & Peta Quran</span>
+              <span className="text-slate-400 hidden sm:inline">|</span>
+              <span className="text-slate-300 hidden sm:inline">Masuk sebagai: {currentUser.name} ({currentUser.role === 'superadmin' ? 'Super Admin' : 'Mitra'})</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setActiveView(currentUser.role === 'superadmin' ? 'superadmin' : 'mitra')}
+                className="px-3 py-1 bg-sky-600 hover:bg-sky-500 text-white rounded-lg font-bold flex items-center gap-1 cursor-pointer transition-colors shadow-xs"
+              >
+                <span className="material-symbols-outlined text-[14px]">arrow_back</span>
+                <span>Kembali ke Dashboard</span>
+              </button>
+              <button
+                onClick={handleLogout}
+                className="px-2 py-1 text-slate-300 hover:text-white cursor-pointer transition-colors"
+              >
+                Keluar
+              </button>
+            </div>
+          </div>
+        )}
+
+        <PublicLandingPage
+          events={proposals}
+          communities={communities}
+          disabilities={disabilities}
+          currentUser={currentUser}
+          appSettings={appSettings}
+          onOpenLogin={handleOpenLogin}
+          onRegisterSuccess={handleRegisterSuccess}
+          onNavigateToDashboard={() => setActiveView(currentUser?.role === 'superadmin' ? 'superadmin' : 'mitra')}
+          onLogAction={handleLogAction}
+          selectedEventIdFromMap={selectedEventIdFromMap}
+          onClearSelectedEventId={() => setSelectedEventIdFromMap(null)}
+        />
+
+        {/* Login Form Modal */}
+        <LoginFormModal
+          isOpen={isLoginModalOpen}
+          onClose={() => setIsLoginModalOpen(false)}
+          onLoginSuccess={handleLoginSuccess}
+          users={users}
+          defaultRoleHint={loginRoleHint}
+        />
+      </div>
+    );
+  }
+
   return (
-    <div className="w-full min-h-screen flex flex-col md:flex-row bg-background">
+    <div className="w-full min-h-screen flex flex-col md:flex-row bg-slate-50">
       {/* Subtle Toast Notification */}
       {toastMessage && (
-        <div className="fixed top-3 right-3 sm:top-5 sm:right-5 z-50 bg-inverse-surface text-inverse-on-surface px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg shadow-lg flex items-center gap-2 text-xs sm:text-[13px] font-medium animate-in fade-in max-w-[90vw]">
+        <div className="fixed top-3 right-3 sm:top-5 sm:right-5 z-50 bg-slate-900 text-white px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl shadow-lg flex items-center gap-2 text-xs sm:text-[13px] font-medium animate-in fade-in max-w-[90vw]">
           <span className="material-symbols-outlined text-[17px] sm:text-[18px] text-emerald-400 shrink-0">check_circle</span>
           <span className="truncate">{toastMessage}</span>
         </div>
@@ -388,11 +463,12 @@ export default function App() {
         appSettings={appSettings}
         onNavigate={setActiveView}
         onOpenLogs={() => setIsLogsModalOpen(true)}
+        onOpenChangePassword={() => setIsChangePasswordModalOpen(true)}
         isMobileOpen={isMobileMenuOpen}
         onCloseMobile={() => setIsMobileMenuOpen(false)}
       />
 
-      <div className="md:ml-60 flex-1 flex flex-col min-w-0 min-h-screen w-full overflow-y-auto">
+      <div className="md:ml-64 flex-1 flex flex-col min-w-0 min-h-screen w-full overflow-y-auto">
         {/* Top Navigation Bar */}
         <Header
           activeView={activeView}
@@ -404,6 +480,7 @@ export default function App() {
           onOpenLogin={handleOpenLogin}
           onLogout={handleLogout}
           onOpenLogs={() => setIsLogsModalOpen(true)}
+          onOpenChangePassword={() => setIsChangePasswordModalOpen(true)}
           unreadLogsCount={systemLogs.length}
           onToggleMobileMenu={() => setIsMobileMenuOpen(prev => !prev)}
         />
@@ -548,7 +625,7 @@ export default function App() {
                     className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-1.5 rounded-lg sm:rounded-xl bg-surface-container-lowest text-secondary border border-secondary/30 font-semibold text-[11px] sm:text-[13px] shadow-xs hover:bg-secondary-container/20 transition-all cursor-pointer"
                   >
                     <span className="material-symbols-outlined text-[16px] sm:text-[18px]">public</span>
-                    <span>2. Peta Komunitas</span>
+                    <span>2. Peta Mitra & Yayasan</span>
                     <span className="px-1.5 py-0.2 rounded-full bg-secondary/10 text-secondary text-[10px] sm:text-[11px] font-bold">
                       {communities.length}
                     </span>
@@ -574,7 +651,7 @@ export default function App() {
                     }}
                     className="text-[12px] text-primary hover:underline font-semibold flex items-center gap-1 cursor-pointer"
                   >
-                    <span>Lihat Peta Komunitas</span>
+                    <span>Lihat Peta Mitra & Yayasan</span>
                     <span className="material-symbols-outlined text-[16px]">arrow_downward</span>
                   </button>
                 </div>
@@ -590,12 +667,12 @@ export default function App() {
                 />
               </section>
 
-              {/* 2. DASHBOARD PETA KOMUNITAS */}
+              {/* 2. DASHBOARD PETA MITRA & YAYASAN */}
               <section id="dashboard-peta-komunitas" className="scroll-mt-6 border-t-2 border-outline-variant/30 pt-10">
                 <div className="flex items-center justify-between mb-4">
                   <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-secondary-container text-on-secondary-container text-[11px] font-bold rounded-lg uppercase tracking-wider">
                     <span className="material-symbols-outlined text-[15px]">map</span>
-                    Dashboard 2: Peta Komunitas & Pesantren Disabilitas
+                    Dashboard 2: Peta Mitra & Yayasan Quran Disabilitas
                   </div>
                   <button
                     onClick={() => {
@@ -633,6 +710,7 @@ export default function App() {
                 participants={participants}
                 onProposalCreated={handleProposalCreated}
                 onProposalUpdated={handleProposalUpdated}
+                onOpenChangePassword={() => setIsChangePasswordModalOpen(true)}
               />
             ) : (
               <div className="max-w-md mx-auto px-4 py-16 text-center">
@@ -657,6 +735,7 @@ export default function App() {
                 onSuperadminCreated={(u) => setUsers(prev => [u, ...prev])}
                 onMitraCreated={(m) => setUsers(prev => [m, ...prev])}
                 onNavigateToMap={() => setActiveView('map')}
+                onOpenChangePassword={() => setIsChangePasswordModalOpen(true)}
               />
             ) : currentUser ? (
               <div className="p-8 max-w-md mx-auto text-center mt-8">
@@ -873,6 +952,17 @@ export default function App() {
         onLoginSuccess={handleLoginSuccess}
         users={users}
         defaultRoleHint={loginRoleHint}
+      />
+
+      {/* Change Password Modal (Super Admin & Mitra) */}
+      <ChangePasswordModal
+        isOpen={isChangePasswordModalOpen}
+        onClose={() => setIsChangePasswordModalOpen(false)}
+        currentUser={currentUser}
+        onSuccess={(msg) => {
+          showToast(msg);
+          handleRefreshLogs();
+        }}
       />
     </div>
   );

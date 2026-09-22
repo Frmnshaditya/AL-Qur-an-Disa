@@ -11,6 +11,7 @@ interface DashboardMitraProps {
   participants: Participant[];
   onProposalCreated: (newProposal: TrainingProposal) => void;
   onProposalUpdated: (updatedProposal: TrainingProposal) => void;
+  onOpenChangePassword?: () => void;
 }
 
 export const DashboardMitra: React.FC<DashboardMitraProps> = ({
@@ -19,6 +20,7 @@ export const DashboardMitra: React.FC<DashboardMitraProps> = ({
   participants,
   onProposalCreated,
   onProposalUpdated,
+  onOpenChangePassword,
 }) => {
   const [activeTab, setActiveTab] = useState<'daftar' | 'ajukan' | 'peserta'>('daftar');
   const [copiedId, setCopiedId] = useState<string | null>(null);
@@ -176,16 +178,29 @@ export const DashboardMitra: React.FC<DashboardMitraProps> = ({
           </p>
         </div>
 
-        <button
-          onClick={() => {
-            handleResetForm();
-            setActiveTab('ajukan');
-          }}
-          className="inline-flex items-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-on-primary rounded-xl text-[13px] font-semibold shadow-sm transition-colors self-start md:self-auto cursor-pointer"
-        >
-          <span className="material-symbols-outlined text-[18px]">add_circle</span>
-          Ajukan Permintaan Pelatihan
-        </button>
+        <div className="flex items-center gap-2.5 flex-wrap self-start md:self-auto">
+          {onOpenChangePassword && (
+            <button
+              onClick={onOpenChangePassword}
+              className="inline-flex items-center gap-2 px-4 py-3 bg-surface-container-low hover:bg-surface-container text-on-surface border border-outline-variant/40 rounded-xl text-[13px] font-semibold shadow-xs transition-colors cursor-pointer"
+              title="Ganti Kata Sandi Akun Mitra"
+            >
+              <span className="material-symbols-outlined text-[18px] text-primary">lock_reset</span>
+              Ganti Kata Sandi
+            </button>
+          )}
+
+          <button
+            onClick={() => {
+              handleResetForm();
+              setActiveTab('ajukan');
+            }}
+            className="inline-flex items-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-on-primary rounded-xl text-[13px] font-semibold shadow-sm transition-colors cursor-pointer"
+          >
+            <span className="material-symbols-outlined text-[18px]">add_circle</span>
+            Ajukan Permintaan Pelatihan
+          </button>
+        </div>
       </div>
 
       {/* Stats Summary Cards */}
@@ -477,6 +492,7 @@ export const DashboardMitra: React.FC<DashboardMitraProps> = ({
                   <option value="Tashih & Tahsin Quran Braille">Tashih & Tahsin Quran Braille Bersanad</option>
                   <option value="Pelatihan Fiqih Praktis Isyarat">Pelatihan Fiqih Praktis Isyarat</option>
                   <option value="Tahfidz Difabel Daksa & Mandiri">Tahfidz Difabel Daksa & Mandiri</option>
+                  <option value="Pelatihan Inklusif untuk Orang Umum & Pendamping">Pelatihan Inklusif untuk Orang Umum & Pendamping</option>
                 </select>
               </div>
 

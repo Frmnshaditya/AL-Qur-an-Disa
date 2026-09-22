@@ -17,6 +17,7 @@ interface DashboardSuperadminProps {
   onSuperadminCreated: (newUser: User) => void;
   onMitraCreated: (newMitra: User) => void;
   onNavigateToMap: () => void;
+  onOpenChangePassword?: () => void;
 }
 
 export const DashboardSuperadmin: React.FC<DashboardSuperadminProps> = ({
@@ -26,6 +27,7 @@ export const DashboardSuperadmin: React.FC<DashboardSuperadminProps> = ({
   participants,
   communities,
   onNavigateToMap,
+  onOpenChangePassword,
 }) => {
   const totalParticipants = participants.length;
 
@@ -68,6 +70,33 @@ export const DashboardSuperadmin: React.FC<DashboardSuperadminProps> = ({
 
   return (
     <>
+      {/* Header Profile & Quick Action Banner */}
+      <div className="bg-surface-container-lowest rounded-xl border border-outline-variant/30 p-5 sm:p-6 shadow-sm mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-primary-container text-on-primary-container text-[11px] font-bold rounded-md mb-2 tracking-wide uppercase">
+            <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+            Super Administrator Nasional
+          </div>
+          <h1 className="text-[20px] sm:text-[24px] font-semibold text-on-surface tracking-tight leading-tight">
+            Ringkasan Eksekutif & Monitoring Pelatihan
+          </h1>
+          <p className="text-on-surface-variant text-[13px] mt-1 font-medium">
+            Selamat datang, <strong className="text-on-surface">{currentUser.name}</strong> • {currentUser.organizationName || 'Pusat Al-Quran Disabilitas'}
+          </p>
+        </div>
+
+        {onOpenChangePassword && (
+          <button
+            onClick={onOpenChangePassword}
+            className="inline-flex items-center gap-2 px-4 py-2.5 bg-surface-container-low hover:bg-surface-container text-on-surface border border-outline-variant/40 rounded-xl text-[13px] font-semibold shadow-xs transition-colors self-start sm:self-auto cursor-pointer"
+            title="Ganti Kata Sandi Super Admin"
+          >
+            <span className="material-symbols-outlined text-[18px] text-primary">lock_reset</span>
+            <span>Ganti Kata Sandi</span>
+          </button>
+        )}
+      </div>
+
       {/* SECTION 1: FUNNEL & SOURCES (2 COLUMNS) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
         {/* Left Bento Card: Funnel Pelatihan Peserta */}

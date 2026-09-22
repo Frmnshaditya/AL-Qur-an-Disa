@@ -82,6 +82,14 @@ let systemLogs: SystemLog[] = [
 ];
 
 // In-Memory Database Store with realistic initial Indonesian seed data
+const userPasswords: Record<string, string> = {
+  usr_super_1: 'password123',
+  usr_super_2: 'password123',
+  usr_mitra_1: 'password123',
+  usr_mitra_2: 'password123',
+  usr_mitra_3: 'password123',
+};
+
 let users: User[] = [
   {
     id: 'usr_super_1',
@@ -143,6 +151,9 @@ let users: User[] = [
 let communities: QuranCommunity[] = [
   {
     id: 'comm_1',
+    mitraId: 'usr_mitra_1',
+    namaMitra: 'Kang Ridwan Sulaeman',
+    namaYayasan: 'Yayasan Sahabat Netra Mengaji Jawa Barat',
     namaLembaga: 'Yayasan Sahabat Netra Mengaji',
     kategoriDisabilitas: ['tunanetra'],
     provinsi: 'Jawa Barat',
@@ -161,6 +172,9 @@ let communities: QuranCommunity[] = [
   },
   {
     id: 'comm_2',
+    mitraId: 'usr_mitra_2',
+    namaMitra: 'Ustadzah Siti Maryam',
+    namaYayasan: 'Rumah Quran Isyarat Indonesia (RQII)',
     namaLembaga: 'Rumah Quran Isyarat Indonesia (RQII)',
     kategoriDisabilitas: ['tunarungu'],
     provinsi: 'DI Yogyakarta',
@@ -179,7 +193,10 @@ let communities: QuranCommunity[] = [
   },
   {
     id: 'comm_3',
-    namaLembaga: 'Komunitas Tuli Mengaji Jakarta',
+    mitraId: 'usr_mitra_4',
+    namaMitra: 'Ustadz Dimas Aditya',
+    namaYayasan: 'Yayasan Tuli Mengaji Jakarta',
+    namaLembaga: 'Yayasan Tuli Mengaji Jakarta',
     kategoriDisabilitas: ['tunarungu'],
     provinsi: 'DKI Jakarta',
     kota: 'Jakarta Selatan',
@@ -191,12 +208,15 @@ let communities: QuranCommunity[] = [
     jumlahSantri: 160,
     fasilitasTersedia: ['Studio Video Isyarat', 'JBI Standar Nasional', 'Buku Panduan Hijaiyah Berwarna'],
     programUnggulan: 'Tashih Surat Pendek Teman Tuli & Pelatihan JBI Quran',
-    deskripsi: 'Komunitas belajar Al-Quran untuk remaja dan dewasa Tuli se-Jabodetabek dengan pengajar bersertifikat.',
+    deskripsi: 'Yayasan binaan mitra untuk pembelajaran Al-Quran remaja dan dewasa Tuli se-Jabodetabek dengan pengajar bersertifikat.',
     verified: true,
     activeEventsCount: 1,
   },
   {
     id: 'comm_4',
+    mitraId: 'usr_mitra_5',
+    namaMitra: 'Drs. H. Syarifudin',
+    namaYayasan: 'Yayasan Pesantren Raudhatul Makfufin',
     namaLembaga: 'Pesantren Disabilitas Raudhatul Makfufin',
     kategoriDisabilitas: ['tunanetra'],
     provinsi: 'Banten',
@@ -209,12 +229,15 @@ let communities: QuranCommunity[] = [
     jumlahSantri: 320,
     fasilitasTersedia: ['Percetakan Al-Quran Braille Mandiri', 'Perpustakaan Braille', 'Asrama Santri Ramah Netra', 'Lab Komputer Bicara'],
     programUnggulan: 'Pesantren Tahfidz Khusus Tunanetra & Percetakan Mushaf Braille',
-    deskripsi: 'Lembaga legendaris pionir percetakan dan pengajaran Al-Quran Braille di Indonesia sejak 1983.',
+    deskripsi: 'Yayasan legendaris mitra pionir percetakan dan pengajaran Al-Quran Braille di Indonesia sejak 1983.',
     verified: true,
     activeEventsCount: 1,
   },
   {
     id: 'comm_5',
+    mitraId: 'usr_mitra_3',
+    namaMitra: 'H. Bambang Wicaksono',
+    namaYayasan: 'Yayasan Samara Disability Quranic Center',
     namaLembaga: 'Samara Disability Quranic Center',
     kategoriDisabilitas: ['multi', 'tunadaksa', 'intelektual_autisme'],
     provinsi: 'Jawa Timur',
@@ -227,12 +250,15 @@ let communities: QuranCommunity[] = [
     jumlahSantri: 195,
     fasilitasTersedia: ['Rampa Kursi Roda Standar', 'Ruang Terapi Sensori', 'Al-Quran Digital Sentuh', 'Toilet Aksesibel Khusus'],
     programUnggulan: 'Kelas Quran Multi-Disabilitas & Terapi Religi Anak Istimewa',
-    deskripsi: 'Pusat pembelajaran quran ramah disabilitas fisik, sensorik, dan neurodivergen di Jawa Timur.',
+    deskripsi: 'Yayasan mitra pusat pembelajaran quran ramah disabilitas fisik, sensorik, dan neurodivergen di Jawa Timur.',
     verified: true,
     activeEventsCount: 1,
   },
   {
     id: 'comm_6',
+    mitraId: 'usr_mitra_6',
+    namaMitra: 'Ustadz Ahmad Fauzi',
+    namaYayasan: 'Yayasan Difabel Mengaji Jawa Tengah',
     namaLembaga: 'Yayasan Difabel Mengaji Jawa Tengah',
     kategoriDisabilitas: ['tunadaksa', 'tunanetra'],
     provinsi: 'Jawa Tengah',
@@ -245,13 +271,16 @@ let communities: QuranCommunity[] = [
     jumlahSantri: 140,
     fasilitasTersedia: ['Kendaraan Operasional Ramah Kursi Roda', 'Mushaf Braille', 'Meja Mengaji Ergonomis'],
     programUnggulan: 'Mobile Tahsin Difabel Keliling Jawa Tengah',
-    deskripsi: 'Menyediakan kelas quran inklusif jemput bola bagi sahabat disabilitas daksa dan netra.',
+    deskripsi: 'Yayasan binaan mitra menyediakan kelas quran inklusif jemput bola bagi sahabat disabilitas daksa dan netra.',
     verified: true,
     activeEventsCount: 0,
   },
   {
     id: 'comm_7',
-    namaLembaga: 'Sahabat Tuli & Netra Quran Makassar',
+    mitraId: 'usr_mitra_7',
+    namaMitra: 'Ustadz Daeng Baso',
+    namaYayasan: 'Yayasan Sahabat Tuli & Netra Quran Makassar',
+    namaLembaga: 'Yayasan Sahabat Tuli & Netra Quran Makassar',
     kategoriDisabilitas: ['multi', 'tunarungu', 'tunanetra'],
     provinsi: 'Sulawesi Selatan',
     kota: 'Kota Makassar',
@@ -263,13 +292,16 @@ let communities: QuranCommunity[] = [
     jumlahSantri: 110,
     fasilitasTersedia: ['Juru Bahasa Isyarat Bugis-Makassar', 'Mushaf Braille', 'Gedung Ramah Kursi Roda'],
     programUnggulan: 'Pengkaderan Da\'i Disabilitas Kawasan Indonesia Timur',
-    deskripsi: 'Sentra pembinaan baca tulis quran inklusif pertama di kawasan Sulawesi Selatan.',
+    deskripsi: 'Yayasan mitra sentra pembinaan baca tulis quran inklusif pertama di kawasan Sulawesi Selatan.',
     verified: true,
     activeEventsCount: 1,
   },
   {
     id: 'comm_8',
-    namaLembaga: 'Komunitas Cinta Quran Disabilitas Banjarbaru',
+    mitraId: 'usr_mitra_8',
+    namaMitra: 'Hj. Nurul Hidayah',
+    namaYayasan: 'Yayasan Cinta Quran Disabilitas Banjarbaru',
+    namaLembaga: 'Yayasan Cinta Quran Disabilitas Banjarbaru',
     kategoriDisabilitas: ['tunanetra', 'tunarungu'],
     provinsi: 'Kalimantan Selatan',
     kota: 'Kota Banjarbaru',
@@ -281,7 +313,7 @@ let communities: QuranCommunity[] = [
     jumlahSantri: 92,
     fasilitasTersedia: ['Mushaf Braille Juz Amma', 'Papan Belajar Hijaiyah Timbul', 'Ruang Kelas Tenang'],
     programUnggulan: 'Satu Rumah Satu Hafidz Netra & Tuli',
-    deskripsi: 'Wadah silaturahmi dan pelatihan tilawah quran khusus difabel se-Kalimantan Selatan.',
+    deskripsi: 'Yayasan mitra wadah silaturahmi dan pelatihan tilawah quran khusus difabel se-Kalimantan Selatan.',
     verified: true,
     activeEventsCount: 0,
   }
@@ -419,6 +451,61 @@ let proposals: TrainingProposal[] = [
     jumlahPendaftar: 0,
     fotoDokumentasi: [
       'https://images.unsplash.com/photo-1532629345422-7515f3d16bb7?w=800&auto=format&fit=crop&q=80'
+    ],
+  },
+  {
+    id: 'ev_006',
+    mitraId: 'usr_mitra_1',
+    mitraName: 'Kang Ridwan Sulaeman',
+    mitraOrg: 'Yayasan Sahabat Netra Mengaji Jawa Barat',
+    namaKegiatan: 'Sosialisasi Literasi Quran Inklusif & Pelatihan Relawan Mengaji untuk Orang Umum',
+    jenisEvent: 'Orang Umum',
+    deskripsiPelatihan: 'Terbuka untuk masyarakat umum, mahasiswa, dan relawan: pelatihan dasar pendampingan mengaji, etika berinteraksi dengan sahabat disabilitas, serta pengenalan huruf hijaiyah braille & isyarat.',
+    lokasiDanAlamat: 'Pusat Dakwah Islam (Pusdai) Jawa Barat, Jl. Diponegoro No. 63, Cihaur Geulis, Kota Bandung',
+    provinsi: 'Jawa Barat',
+    kota: 'Kota Bandung',
+    latitude: -6.9015,
+    longitude: 107.6253,
+    tanggalKegiatan: '2026-11-20 s/d 2026-11-22',
+    targetDanKuotaPeserta: 100,
+    kebutuhanPeserta: ['Modul Panduan Relawan Inklusif', 'Sertifikat Pelatihan', 'Konsumsi & Fasilitas Ramah Umum'],
+    status: 'disetujui',
+    tanggalPersetujuan: '2026-03-10T08:00:00Z',
+    linkPendaftaran: 'https://ais-dev-y3hved57q7ndxyimyyi6gz-136520433181.asia-east1.run.app/#daftar/ev_006',
+    kuotaDisetujui: 100,
+    isAktif: true,
+    createdAt: '2026-03-09T10:00:00Z',
+    jumlahPendaftar: 72,
+    fotoDokumentasi: [
+      'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=800&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&auto=format&fit=crop&q=80'
+    ],
+  },
+  {
+    id: 'ev_007',
+    mitraId: 'usr_mitra_2',
+    mitraName: 'Ustadzah Siti Maryam',
+    mitraOrg: 'Rumah Quran Isyarat Indonesia (RQII)',
+    namaKegiatan: 'Kajian Akbar Inklusif & Belajar Huruf Hijaiyah Isyarat bagi Orang Umum',
+    jenisEvent: 'Orang Umum',
+    deskripsiPelatihan: 'Kajian terbuka untuk masyarakat umum bersama dai nasional dan praktisi bahasa isyarat, dilengkapi sesi interaktif belajar 28 abjad hijaiyah isyarat bersama teman Tuli.',
+    lokasiDanAlamat: 'Masjid Istiqlal, Ruang Al-Fattah Lt. 1, Gambir, Jakarta Pusat',
+    provinsi: 'DKI Jakarta',
+    kota: 'Jakarta Pusat',
+    latitude: -6.1702,
+    longitude: 106.8317,
+    tanggalKegiatan: '2026-12-05',
+    targetDanKuotaPeserta: 150,
+    kebutuhanPeserta: ['Akses Terbuka untuk Orang Umum', 'Juru Bahasa Isyarat', 'Materi Lembar Isyarat Hijaiyah'],
+    status: 'disetujui',
+    tanggalPersetujuan: '2026-03-11T12:00:00Z',
+    linkPendaftaran: 'https://ais-dev-y3hved57q7ndxyimyyi6gz-136520433181.asia-east1.run.app/#daftar/ev_007',
+    kuotaDisetujui: 150,
+    isAktif: true,
+    createdAt: '2026-03-10T14:00:00Z',
+    jumlahPendaftar: 110,
+    fotoDokumentasi: [
+      'https://images.unsplash.com/photo-1544717305-2782549b5136?w=800&auto=format&fit=crop&q=80'
     ],
   }
 ];
@@ -700,13 +787,63 @@ app.post('/api/auth/login', (req, res) => {
     return res.status(401).json({ error: 'Akun dengan email tersebut tidak ditemukan.' });
   }
 
-  // Demo password verification: accept standard passwords or check if provided
-  if (password && password !== 'password123' && password !== 'admin123' && password !== '123456') {
-    return res.status(401).json({ error: 'Kata sandi tidak valid. (Gunakan kata sandi demo: password123)' });
+  // Password verification with custom user password or standard demo fallbacks
+  const storedPassword = userPasswords[target.id] || 'password123';
+  if (password && password !== storedPassword && password !== 'password123' && password !== 'admin123' && password !== '123456') {
+    return res.status(401).json({ error: 'Kata sandi tidak valid. Periksa kembali kata sandi Anda.' });
   }
 
   activeUserId = target.id;
   return res.json({ success: true, user: target, message: `Selamat datang kembali, ${target.name}` });
+});
+
+// Change Password Endpoint (Integrated for Superadmin and Mitra)
+app.post('/api/auth/change-password', (req, res) => {
+  const { userId, currentPassword, newPassword, confirmPassword } = req.body;
+
+  if (!userId) {
+    return res.status(400).json({ error: 'User ID wajib disertakan.' });
+  }
+
+  const target = users.find(u => u.id === userId);
+  if (!target) {
+    return res.status(404).json({ error: 'Pengguna tidak ditemukan.' });
+  }
+
+  if (!newPassword || newPassword.length < 6) {
+    return res.status(400).json({ error: 'Kata sandi baru minimal harus terdiri dari 6 karakter.' });
+  }
+
+  if (newPassword !== confirmPassword) {
+    return res.status(400).json({ error: 'Konfirmasi kata sandi baru tidak sesuai.' });
+  }
+
+  const existingPassword = userPasswords[target.id] || 'password123';
+  // Validate current password if provided
+  if (currentPassword && currentPassword !== existingPassword && currentPassword !== 'password123' && currentPassword !== 'admin123') {
+    return res.status(400).json({ error: 'Kata sandi saat ini tidak cocok.' });
+  }
+
+  // Update password in store
+  userPasswords[target.id] = newPassword;
+
+  // Add system audit log
+  const newLog: SystemLog = {
+    id: `log_${Date.now()}`,
+    timestamp: new Date().toISOString(),
+    user: target.name,
+    userRole: target.role,
+    action: 'Ganti Kata Sandi',
+    module: 'auth',
+    details: `Perubahan kata sandi akun ${target.name} (${target.role}) berhasil disimpan.`,
+    status: 'success',
+  };
+  systemLogs.unshift(newLog);
+
+  return res.json({
+    success: true,
+    message: `Kata sandi untuk ${target.name} berhasil diperbarui.`,
+  });
 });
 
 app.post('/api/auth/logout', (req, res) => {

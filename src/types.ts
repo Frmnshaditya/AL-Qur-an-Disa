@@ -109,6 +109,9 @@ export interface Participant {
 
 export interface QuranCommunity {
   id: string;
+  mitraId?: string;
+  namaMitra?: string;
+  namaYayasan?: string;
   namaLembaga: string;
   kategoriDisabilitas: DisabilityType[];
   provinsi: string;

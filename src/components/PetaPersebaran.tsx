@@ -14,6 +14,7 @@ interface PetaPersebaranProps {
   onAddNewCommunity?: (comm: Partial<QuranCommunity>) => void;
   isSuperAdmin?: boolean;
   isEmbedded?: boolean;
+  hideAddButton?: boolean;
   disabilities?: DisabilityMaster[];
   initialCategory?: string;
 }
@@ -25,6 +26,7 @@ export const PetaPersebaran: React.FC<PetaPersebaranProps> = ({
   onAddNewCommunity,
   isSuperAdmin = false,
   isEmbedded = false,
+  hideAddButton = false,
   disabilities = [],
   initialCategory,
 }) => {
@@ -46,8 +48,10 @@ export const PetaPersebaran: React.FC<PetaPersebaranProps> = ({
   const [copiedLink, setCopiedLink] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
 
-  // New community form state
+  // New community / mitra form state
   const [newCommName, setNewCommName] = useState('');
+  const [newCommYayasan, setNewCommYayasan] = useState('');
+  const [newCommMitra, setNewCommMitra] = useState('');
   const [newCommCity, setNewCommCity] = useState('');
   const [newCommProvince, setNewCommProvince] = useState('Jawa Barat');
   const [newCommAddress, setNewCommAddress] = useState('');
@@ -182,9 +186,15 @@ export const PetaPersebaran: React.FC<PetaPersebaranProps> = ({
       );
 
       const popupContent = document.createElement('div');
-      popupContent.className = 'p-3 max-w-[280px] font-sans';
+      popupContent.className = 'p-3.5 max-w-[290px] font-sans';
+      const displayName = c.namaYayasan || c.namaLembaga;
       popupContent.innerHTML = `
-        <div class="font-bold text-[14px] text-on-surface leading-tight mb-1">${c.namaLembaga}</div>
+        <div class="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-600/15 text-emerald-800 text-[10px] font-bold uppercase tracking-wider w-fit mb-2">
+          <span class="material-symbols-outlined text-[13px]">verified</span>
+          <span>Yayasan Mitra Terdaftar</span>
+        </div>
+        <div class="font-bold text-[15px] text-on-surface leading-tight mb-1">${displayName}</div>
+        ${c.namaMitra ? `<div class="text-[12px] font-semibold text-primary mb-1 flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">person</span><span>Mitra: ${c.namaMitra}</span></div>` : ''}
         <div class="text-[12px] text-on-surface-variant mb-2">${c.kota}, ${c.provinsi}</div>
         <div class="inline-block px-2.5 py-1 text-[10px] font-bold text-white rounded-md uppercase tracking-wider ${markerBg} mb-3">
           ${badgeLabel}
@@ -228,7 +238,7 @@ export const PetaPersebaran: React.FC<PetaPersebaranProps> = ({
 
       const detailBtn = document.createElement('button');
       detailBtn.className = 'w-full py-2 bg-on-surface hover:bg-on-surface/90 text-surface rounded-xl text-[12px] font-semibold transition-colors cursor-pointer flex items-center justify-center gap-1.5';
-      detailBtn.innerHTML = '<span class="material-symbols-outlined text-[16px]">domain</span><span>Lihat Detail Lembaga</span>';
+      detailBtn.innerHTML = '<span class="material-symbols-outlined text-[16px]">domain</span><span>Lihat Profil Yayasan Mitra</span>';
       detailBtn.onclick = () => {
         setSelectedCommunity(c);
       };
@@ -343,6 +353,8 @@ export const PetaPersebaran: React.FC<PetaPersebaranProps> = ({
     if (onAddNewCommunity) {
       onAddNewCommunity({
         namaLembaga: newCommName,
+        namaYayasan: newCommYayasan || newCommName,
+        namaMitra: newCommMitra || 'Mitra Lembaga',
         kota: newCommCity,
         provinsi: newCommProvince,
         alamatLengkap: newCommAddress,
@@ -361,6 +373,8 @@ export const PetaPersebaran: React.FC<PetaPersebaranProps> = ({
     setShowAddModal(false);
     // Reset form
     setNewCommName('');
+    setNewCommYayasan('');
+    setNewCommMitra('');
     setNewCommAddress('');
     setNewCommCity('');
     setNewCommPhone('');
@@ -373,13 +387,13 @@ export const PetaPersebaran: React.FC<PetaPersebaranProps> = ({
         <div>
           <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-secondary-container text-on-secondary-container text-[11px] font-bold rounded-md mb-3 tracking-wide uppercase">
             <span className="material-symbols-outlined text-[14px]">public</span>
-            {isEmbedded ? 'Dashboard 2: Peta Persebaran Komunitas' : 'Peta Persebaran Lembaga'}
+            {isEmbedded ? 'Peta Persebaran Mitra & Yayasan Quran' : 'Peta Persebaran Mitra & Yayasan'}
           </div>
           <h2 className="text-[26px] md:text-[30px] font-semibold text-on-surface tracking-tight leading-tight">
-            Sentra Pembelajaran Al-Quran Sahabat Disabilitas
+            Sentra Pembelajaran & Yayasan Mitra Al-Quran Sahabat Disabilitas
           </h2>
           <p className="text-on-surface-variant text-[14px] md:text-[15px] mt-1.5 font-medium max-w-2xl">
-            Menghubungkan teman Netra, Tuli, Daksa, dan neurodivergen dengan rumah quran, pesantren khusus, dan komunitas penyelenggara pelatihan di seluruh nusantara.
+            Setiap mitra resmi memiliki yayasan atau lembaga Al-Quran inklusif tersendiri dengan fasilitas terverifikasi bagi sahabat disabilitas dan masyarakat umum.
           </p>
         </div>
 
@@ -396,13 +410,13 @@ export const PetaPersebaran: React.FC<PetaPersebaranProps> = ({
             </button>
           )}
 
-          {isSuperAdmin && (
+          {!isEmbedded && !hideAddButton && isSuperAdmin && (
             <button
               onClick={() => setShowAddModal(true)}
               className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary/90 text-on-primary rounded-xl text-[12px] font-semibold transition-colors shadow-xs self-start md:self-auto cursor-pointer"
             >
               <span className="material-symbols-outlined text-[18px]">add_circle</span>
-              Tambah Komunitas Baru
+              Tambah Mitra & Yayasan Baru
             </button>
           )}
         </div>
@@ -550,7 +564,7 @@ export const PetaPersebaran: React.FC<PetaPersebaranProps> = ({
             {/* Total Pins counter */}
             <div className="absolute top-5 right-5 z-[400] bg-on-surface/90 backdrop-blur-md text-surface px-4 py-2 rounded-xl text-[12px] font-bold shadow-lg flex items-center gap-2 tracking-wide uppercase">
               <span className="material-symbols-outlined text-[16px] text-primary-container">location_city</span>
-              {filteredCommunities.length} Titik Lembaga
+              {filteredCommunities.length} Titik Mitra & Yayasan
             </div>
           </div>
         </div>
@@ -567,14 +581,21 @@ export const PetaPersebaran: React.FC<PetaPersebaranProps> = ({
                 <span className="material-symbols-outlined text-[20px]">close</span>
               </button>
 
-              <div className="flex items-center gap-1.5 text-primary text-[11px] font-bold uppercase tracking-wide mb-3">
+              <div className="flex items-center gap-1.5 text-primary text-[11px] font-bold uppercase tracking-wide mb-2">
                 <span className="material-symbols-outlined text-[16px]">verified</span>
-                Lembaga Terverifikasi
+                Mitra & Yayasan Terverifikasi
               </div>
 
               <h3 className="text-[20px] font-semibold text-on-surface leading-snug mb-1">
-                {selectedCommunity.namaLembaga}
+                {selectedCommunity.namaYayasan || selectedCommunity.namaLembaga}
               </h3>
+
+              {selectedCommunity.namaMitra && (
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-primary/10 text-primary text-[12px] font-semibold mb-3">
+                  <span className="material-symbols-outlined text-[14px]">person</span>
+                  <span>Penanggung Jawab Mitra: {selectedCommunity.namaMitra}</span>
+                </div>
+              )}
 
               <div className="flex items-center gap-1.5 text-[13px] text-on-surface-variant font-medium mb-4">
                 <span className="material-symbols-outlined text-[16px]">location_on</span>
@@ -678,7 +699,7 @@ export const PetaPersebaran: React.FC<PetaPersebaranProps> = ({
               <div className="flex items-center justify-between pb-4 border-b border-outline-variant/20 mb-4">
                 <h3 className="font-semibold text-[15px] text-on-surface flex items-center gap-2">
                   <span className="material-symbols-outlined text-primary text-[20px]">corporate_fare</span>
-                  Daftar Lembaga ({filteredCommunities.length})
+                  Daftar Mitra & Yayasan ({filteredCommunities.length})
                 </h3>
                 <span className="text-[11px] text-outline font-medium uppercase tracking-wider">Klik untuk fokus</span>
               </div>
@@ -686,7 +707,7 @@ export const PetaPersebaran: React.FC<PetaPersebaranProps> = ({
               <div className="overflow-y-auto space-y-3 pr-2 flex-1 custom-scrollbar">
                 {filteredCommunities.length === 0 ? (
                   <div className="p-8 text-center text-on-surface-variant text-[13px]">
-                    Tidak ada lembaga yang cocok dengan filter pencarian ini.
+                    Tidak ada mitra atau yayasan yang cocok dengan filter pencarian ini.
                   </div>
                 ) : (
                   filteredCommunities.map((comm) => (
@@ -695,9 +716,9 @@ export const PetaPersebaran: React.FC<PetaPersebaranProps> = ({
                       onClick={() => handleFocusCommunity(comm)}
                       className="p-4 rounded-xl border border-outline-variant/30 hover:border-primary/50 bg-surface-container-low hover:bg-primary-container/20 cursor-pointer transition-all text-left group"
                     >
-                      <div className="flex items-start justify-between gap-3 mb-2">
+                      <div className="flex items-start justify-between gap-3 mb-1.5">
                         <h4 className="text-[14px] font-semibold text-on-surface leading-snug group-hover:text-primary transition-colors">
-                          {comm.namaLembaga}
+                          {comm.namaYayasan || comm.namaLembaga}
                         </h4>
                         <span className="px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-surface-container text-on-surface whitespace-nowrap">
                           {comm.kategoriDisabilitas.includes('tunanetra') && 'Braille'}
@@ -706,6 +727,12 @@ export const PetaPersebaran: React.FC<PetaPersebaranProps> = ({
                           {comm.kategoriDisabilitas.includes('multi') && 'Inklusif'}
                         </span>
                       </div>
+                      {comm.namaMitra && (
+                        <p className="text-[11px] text-primary font-medium flex items-center gap-1 mb-1.5">
+                          <span className="material-symbols-outlined text-[13px]">person</span>
+                          <span>Mitra: {comm.namaMitra}</span>
+                        </p>
+                      )}
                       <p className="text-[12px] text-on-surface-variant flex items-center gap-1.5 mb-2 font-medium">
                         <span className="material-symbols-outlined text-[14px] text-outline">location_on</span>
                         {comm.kota}, {comm.provinsi}
@@ -732,7 +759,7 @@ export const PetaPersebaran: React.FC<PetaPersebaranProps> = ({
                 <div className="w-10 h-10 rounded-xl bg-primary-container text-primary flex items-center justify-center">
                   <span className="material-symbols-outlined text-[20px]">add_business</span>
                 </div>
-                <h3 className="font-semibold text-on-surface text-[20px]">Tambah Lembaga Baru</h3>
+                <h3 className="font-semibold text-on-surface text-[20px]">Tambah Mitra & Yayasan Baru</h3>
               </div>
               <button 
                 onClick={() => setShowAddModal(false)} 
@@ -743,14 +770,42 @@ export const PetaPersebaran: React.FC<PetaPersebaranProps> = ({
             </div>
 
             <form onSubmit={handleSubmitNewCommunity} className="space-y-5 text-[13px]">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block font-semibold text-on-surface mb-1.5">Nama Yayasan / Lembaga *</label>
+                  <input
+                    type="text"
+                    required
+                    value={newCommYayasan}
+                    onChange={(e) => {
+                      setNewCommYayasan(e.target.value);
+                      if (!newCommName) setNewCommName(e.target.value);
+                    }}
+                    placeholder="Contoh: Yayasan Sahabat Quran Braille"
+                    className="w-full px-4 py-2.5 border border-outline-variant/50 bg-surface-container-lowest rounded-xl focus:ring-1 focus:ring-primary focus:border-primary focus:outline-none text-[14px]"
+                  />
+                </div>
+                <div>
+                  <label className="block font-semibold text-on-surface mb-1.5">Penanggung Jawab Mitra *</label>
+                  <input
+                    type="text"
+                    required
+                    value={newCommMitra}
+                    onChange={(e) => setNewCommMitra(e.target.value)}
+                    placeholder="Contoh: Ustadz Ahmad Fauzi"
+                    className="w-full px-4 py-2.5 border border-outline-variant/50 bg-surface-container-lowest rounded-xl focus:ring-1 focus:ring-primary focus:border-primary focus:outline-none text-[14px]"
+                  />
+                </div>
+              </div>
+
               <div>
-                <label className="block font-semibold text-on-surface mb-1.5">Nama Lembaga / Komunitas *</label>
+                <label className="block font-semibold text-on-surface mb-1.5">Nama Sentra / Cabang Lembaga *</label>
                 <input
                   type="text"
                   required
                   value={newCommName}
                   onChange={(e) => setNewCommName(e.target.value)}
-                  placeholder="Contoh: Rumah Quran Braille Sahabat Netra"
+                  placeholder="Contoh: Sentra Quran Disabilitas Bandung"
                   className="w-full px-4 py-2.5 border border-outline-variant/50 bg-surface-container-lowest rounded-xl focus:ring-1 focus:ring-primary focus:border-primary focus:outline-none text-[14px]"
                 />
               </div>

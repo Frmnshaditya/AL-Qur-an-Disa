@@ -71,7 +71,7 @@ export const EventCatalogPublic: React.FC<EventCatalogPublicProps> = ({
   const categories = useMemo(() => {
     if (disabilities && disabilities.length > 0) {
       const activeList = disabilities.filter(d => d.isAktif).map(d => d.nama);
-      return ['Semua', ...activeList];
+      return ['Semua', ...activeList, 'Orang Umum'];
     }
     return [
       'Semua',
@@ -79,6 +79,7 @@ export const EventCatalogPublic: React.FC<EventCatalogPublicProps> = ({
       'Tunarungu / Tuli (Bahasa Isyarat)',
       'Tunadaksa (Fisik & Motorik)',
       'Disabilitas Intelektual & Autisme',
+      'Orang Umum',
     ];
   }, [disabilities]);
 
@@ -90,23 +91,28 @@ export const EventCatalogPublic: React.FC<EventCatalogPublicProps> = ({
   const filteredEvents = activeEvents.filter(ev => {
     let matchesCategory = true;
     if (selectedCategory !== 'Semua') {
-      const selectedDis = disabilities?.find(
-        d => d.nama.toLowerCase() === selectedCategory.toLowerCase() ||
-             d.kode.toLowerCase() === selectedCategory.toLowerCase()
-      );
-      if (selectedDis) {
-        const codeKey = selectedDis.kode.toLowerCase();
-        const nameKeywords = selectedDis.nama
-          .toLowerCase()
-          .replace(/[()/]/g, ' ')
-          .split(/\s+/)
-          .filter(w => w.length >= 4);
-        const evContent = `${ev.jenisEvent} ${ev.namaKegiatan} ${ev.deskripsiPelatihan} ${ev.kebutuhanPeserta.join(' ')}`.toLowerCase();
-        matchesCategory = evContent.includes(codeKey) || nameKeywords.some(w => evContent.includes(w));
+      if (selectedCategory.toLowerCase().includes('umum')) {
+        const evContent = `${ev.jenisEvent} ${ev.targetPeserta} ${ev.namaKegiatan} ${ev.deskripsiPelatihan}`.toLowerCase();
+        matchesCategory = evContent.includes('umum');
       } else {
-        const firstWord = selectedCategory.toLowerCase().split(' ')[0];
-        matchesCategory = ev.jenisEvent.toLowerCase().includes(firstWord) ||
-                          ev.namaKegiatan.toLowerCase().includes(firstWord);
+        const selectedDis = disabilities?.find(
+          d => d.nama.toLowerCase() === selectedCategory.toLowerCase() ||
+               d.kode.toLowerCase() === selectedCategory.toLowerCase()
+        );
+        if (selectedDis) {
+          const codeKey = selectedDis.kode.toLowerCase();
+          const nameKeywords = selectedDis.nama
+            .toLowerCase()
+            .replace(/[()/]/g, ' ')
+            .split(/\s+/)
+            .filter(w => w.length >= 4);
+          const evContent = `${ev.jenisEvent} ${ev.namaKegiatan} ${ev.deskripsiPelatihan} ${ev.kebutuhanPeserta.join(' ')}`.toLowerCase();
+          matchesCategory = evContent.includes(codeKey) || nameKeywords.some(w => evContent.includes(w));
+        } else {
+          const firstWord = selectedCategory.toLowerCase().split(' ')[0];
+          matchesCategory = ev.jenisEvent.toLowerCase().includes(firstWord) ||
+                            ev.namaKegiatan.toLowerCase().includes(firstWord);
+        }
       }
     }
     const matchesSearch = searchQuery.trim() === ''

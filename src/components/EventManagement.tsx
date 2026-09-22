@@ -429,6 +429,7 @@ export const EventManagement: React.FC<EventManagementProps> = ({
                     <option value="Workshop Quran Ramah Autisme">Workshop Quran Ramah Autisme</option>
                     <option value="Tadabbur Quran Tunadaksa">Tadabbur Quran Tunadaksa</option>
                     <option value="Standardisasi Pengajar Disabilitas">Standardisasi Pengajar Disabilitas</option>
+                    <option value="Pelatihan Inklusif untuk Orang Umum & Pendamping">Pelatihan Inklusif untuk Orang Umum & Pendamping</option>
                   </select>
                 </div>
 
